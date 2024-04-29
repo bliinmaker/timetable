@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Localization Project</title>
+</head>
+<body>
+    {% load i18n %}
+    <h1>{{ greeting }}</h1>
+    <p>{% translate 'Number' %}: {{ large_number }}</p>
+    <p>{% translate 'Date' %}: {{ current_date }}</p>
+    <form action="{% url 'set_language' %}" method="post">
+        {% csrf_token %}
+        <input name="next" type="hidden" value="{{ redirect_to }}" />
+        <select name="language">
+            <option value="en">English</option>
+            <option value="ru">Russian</option>
+        </select>
+        <input type="submit" value="Change Language">
+    </form>
+</body>
+</html>
