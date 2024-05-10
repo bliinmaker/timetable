@@ -20,14 +20,56 @@ msgstr ""
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
 "%100>=11 && n%100<=14)? 2 : 3);\n"
 
-msgid "Welcome to our Localization Project!"
-msgstr "Добро пожаловать!"
+msgid "Datetime is bigger than current datetime!"
+msgstr "Дата и время больше текущих!"
 
-msgid "Number"
-msgstr "Номер"
+msgid "created"
+msgstr "создано"
 
-msgid "Date"
-msgstr "Дата"
+msgid "modified"
+msgstr "изменено"
+
+msgid "faculty"
+msgstr "факультет"
+
+msgid "code faculty"
+msgstr "код факультета"
+
+msgid "description"
+msgstr "описание"
+
+msgid "title"
+msgstr "заголовок"
+
+msgid "faculties"
+msgstr "факультеты"
+
+msgid "group"
+msgstr "группа"
 
 msgid "lessons"
 msgstr "уроки"
+
+msgid "subjects"
+msgstr "предметы"
+
+msgid "subject"
+msgstr "предмет"
+
+msgid "teachers"
+msgstr "учителя"
+
+msgid "teacher"
+msgstr "учитель"
+
+msgid "full name"
+msgstr "имя фамилия"
+
+msgid "start time"
+msgstr "время начала"
+
+msgid "student"
+msgstr "студент"
+
+msgid "students"
+msgstr "студенты"

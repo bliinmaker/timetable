@@ -1,10 +1,8 @@
 from django.contrib import admin
-from .models import Faculty, Group, Subject, Teacher, Lesson, Student, LessonGroup, SubjectGroup, SubjectTeacher
+from django.utils.translation import gettext_lazy as _
 
-
-class LessonGroupInline(admin.TabularInline):
-    model = LessonGroup
-    extra = 1
+from .models import (Faculty, Group, Lesson, Student, Subject, SubjectGroup,
+                     SubjectTeacher, Teacher)
 
 
 class SubjectGroupInline(admin.TabularInline):
@@ -28,7 +26,7 @@ class FacultyAdmin(admin.ModelAdmin):
 @admin.register(Group)
 class GroupAdmin(admin.ModelAdmin):
     model = Group
-    inlines = (SubjectGroupInline, LessonGroupInline)
+    inlines = (SubjectGroupInline,)
     list_filter = (
         'faculty',
     )
@@ -56,7 +54,6 @@ class TeacherAdmin(admin.ModelAdmin):
 @admin.register(Lesson)
 class LessonAdmin(admin.ModelAdmin):
     model = Lesson
-    inlines = (LessonGroupInline,)
     list_filter = (
         'start_time',
         'subject',

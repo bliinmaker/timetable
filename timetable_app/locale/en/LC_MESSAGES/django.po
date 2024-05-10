@@ -18,14 +18,56 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgid "Welcome to our Localization Project!"
+msgid "Datetime is bigger than current datetime!"
 msgstr ""
 
-msgid "Number"
+msgid "created"
 msgstr ""
 
-msgid "Date"
+msgid "modified"
+msgstr ""
+
+msgid "faculty"
+msgstr ""
+
+msgid "code faculty"
+msgstr ""
+
+msgid "description"
+msgstr ""
+
+msgid "title"
+msgstr ""
+
+msgid "faculties"
+msgstr ""
+
+msgid "group"
 msgstr ""
 
 msgid "lessons"
+msgstr ""
+
+msgid "subjects"
+msgstr ""
+
+msgid "subject"
+msgstr ""
+
+msgid "teachers"
+msgstr ""
+
+msgid "teacher"
+msgstr ""
+
+msgid "full name"
+msgstr ""
+
+msgid "start time"
+msgstr ""
+
+msgid "student"
+msgstr ""
+
+msgid "students"
 msgstr ""
