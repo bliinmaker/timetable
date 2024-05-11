@@ -69,7 +69,7 @@ class ModifiedMixin(models.Model):
         abstract = True
 
 
-class Faculty(UUIDMixin):
+class Faculty(UUIDMixin, CreatedMixin, ModifiedMixin):
     title = models.CharField(_('faculty'), max_length=config.CHARS_DEFAULT)
     code_faculty = models.CharField(
         _('code faculty'), max_length=config.CHARS_DEFAULT)
@@ -85,7 +85,7 @@ class Faculty(UUIDMixin):
         db_table = 'faculty'
 
 
-class Group(UUIDMixin):
+class Group(UUIDMixin, CreatedMixin, ModifiedMixin):
     title = models.CharField(_('group'), max_length=config.CHARS_DEFAULT)
     faculty = models.ForeignKey(Faculty, verbose_name=_(
         'faculty'), on_delete=models.CASCADE)
@@ -102,7 +102,7 @@ class Group(UUIDMixin):
         db_table = 'group'
 
 
-class Subject(UUIDMixin):
+class Subject(UUIDMixin, CreatedMixin, ModifiedMixin):
     title = models.CharField(_('title'), max_length=config.CHARS_DEFAULT)
     groups = models.ManyToManyField(
         Group, verbose_name=_('groups'), through='SubjectGroup')
@@ -119,7 +119,7 @@ class Subject(UUIDMixin):
         db_table = 'subject'
 
 
-class Teacher(UUIDMixin):
+class Teacher(UUIDMixin, CreatedMixin, ModifiedMixin):
     user = models.OneToOneField(
         AUTH_USER_MODEL, null=True, on_delete=models.CASCADE)
     full_name = models.CharField(
@@ -137,7 +137,7 @@ class Teacher(UUIDMixin):
         db_table = 'teacher'
 
 
-class Lesson(UUIDMixin):
+class Lesson(UUIDMixin, CreatedMixin, ModifiedMixin):
     duration = models.IntegerField(
         _('duration'), default=90, blank=False, null=True)
     start_time = models.DateTimeField(
@@ -215,13 +215,14 @@ def update_end_time(sender, instance, **kwargs):
         timedelta(minutes=instance.duration)
 
 
-class Student(UUIDMixin, CreatedMixin):
+class Student(UUIDMixin, ModifiedMixin, CreatedMixin):
     user = models.OneToOneField(
         AUTH_USER_MODEL,  null=True, on_delete=models.CASCADE)
     full_name = models.CharField(verbose_name=_(
         'full name'), max_length=config.CHARS_DEFAULT)
     group = models.ForeignKey(Group, verbose_name=_(
-        'group'), on_delete=models.CASCADE, db_column='group_id', blank=True, null=True)
+        'group'), on_delete=models.CASCADE,
+        db_column='group_id', blank=True, null=True)
 
     def __str__(self):
         return f'{self.full_name} - {self.group.title}'
@@ -233,7 +234,7 @@ class Student(UUIDMixin, CreatedMixin):
         db_table = 'student'
 
 
-class SubjectGroup(UUIDMixin):
+class SubjectGroup(UUIDMixin, CreatedMixin):
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
     group = models.ForeignKey(
         Group, on_delete=models.CASCADE, db_column='group_id')
@@ -243,7 +244,7 @@ class SubjectGroup(UUIDMixin):
         unique_together = (('subject', 'group'),)
 
 
-class SubjectTeacher(UUIDMixin):
+class SubjectTeacher(UUIDMixin, CreatedMixin):
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
 
