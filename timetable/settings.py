@@ -10,15 +10,12 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
-import os
 from os import getenv, path
 from pathlib import Path
 
-from django.utils.translation import gettext_lazy as _
 from dotenv import load_dotenv
 
 load_dotenv()
-
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -103,7 +100,7 @@ DATABASES = {
         'HOST': getenv('PG_HOST'),
         'PORT': getenv('PG_PORT'),
         'TEST': {
-            'NAME': 'test',
+            'NAME': 'test_db',
         },
     }
 }
@@ -143,6 +140,8 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
+
+TEST_RUNNER = 'tests.runner.PostgresSchemaRunner'
 
 STATIC_URL = 'static/'
 

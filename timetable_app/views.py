@@ -44,85 +44,28 @@ class Permission(BasePermission):
         return False
 
 
-def query_from_request(cls_serializer, request) -> dict:
-    """Gets query from request according to fields of the serializer class. 
-    Returns empty dict if didn't find any."""
-    query = {}
-    for field in cls_serializer.Meta.fields:
-        value = request.GET.get(field, '')
-        if value:
-            query[field] = value
-    return query
+def query_from_request(request, serializer=None):
+    if serializer:
+        query = {}
+        for attr in serializer.Meta.fields:
+            attr_value = request.GET.get(attr, '')
+            if attr_value:
+                query[attr] = attr_value
+        return query
+    return request.GET
 
 
-def create_viewset(cls_model, serializer, order_field):
-    class CustomViewSet(ModelViewSet):
-        queryset = cls_model.objects.all()
-        serializer_class = serializer
-        permission_classes = [Permission]
-
-        def get_queryset(self):
-            query = query_from_request(serializer, self.request)
-            queryset = cls_model.objects.filter(
-                **query) if query else cls_model.objects.all()
-            return queryset.order_by(order_field)
-
-        def delete(self, request):
-            def response_from_objects(num):
-                if not num:
-                    content = f'DELETE for model {
-                        cls_model.__name__}: query did not match any objects'
-                    return Response(content, status=status_codes.HTTP_404_NOT_FOUND)
-                status = status_codes.HTTP_204_NO_CONTENT if num == 1 else status_codes.HTTP_200_OK
-                return Response(f'DELETED {num} instances of {cls_model.__name__}', status=status)
-
-            query = query_from_request(serializer, request)
-            if query:
-                objects = cls_model.objects.all().filter(**query)
-                num_objects = len(objects)
-                try:
-                    objects.delete()
-                except Exception as error:
-                    return Response(error, status=status_codes.HTTP_500_INTERNAL_SERVER_ERROR)
-                return response_from_objects(num_objects)
-            return Response('DELETE has got no query', status=status_codes.HTTP_400_BAD_REQUEST)
-
-        def put(self, request):
-            """gets id from query and updates instance with this ID, creates new if doesnt find any."""
-            def serialize(target):
-                content = JSONParser().parse(request)
-                model_name = cls_model.__name__
-                if target:
-                    serialized = serializer(target, data=content, partial=True)
-                    status = status_codes.HTTP_200_OK
-                    body = f'PUT has updated {model_name} instance'
-                else:
-                    serialized = serializer(data=content, partial=True)
-                    status = status_codes.HTTP_201_CREATED
-                    body = f'PUT has created new {model_name} instance'
-                if not serialized.is_valid():
-                    return (
-                        f'PUT could not serialize query {
-                            query} into {model_name}',
-                        status_codes.HTTP_400_BAD_REQUEST
-                    )
-                try:
-                    model_obj = serialized.save()
-                except Exception as error:
-                    return error, status_codes.HTTP_500_INTERNAL_SERVER_ERROR
-                body = f'{body} with id={model_obj.id}'
-                return body, status
-
-            query = query_from_request(serializer, request)
-            target_id = query.get('id', '')
-            if not target_id:
-                return Response('PUT has got no id', status=status_codes.HTTP_400_BAD_REQUEST)
-            try:
-                target_object = cls_model.objects.get(id=target_id)
-            except Exception:
-                target_object = None
-            content, status = serialize(target_object)
-            return Response(content, status=status)
+def create_viewset(cls_model: models.Model, serializer, order_field: str):
+    class_name = f"{cls_model.__name__}ViewSet"
+    doc = f"API endpoint that allows users to be viewed or edited for {
+        cls_model.__name__}"
+    CustomViewSet = type(class_name, (viewsets.ModelViewSet,), {
+        "__doc__": doc,
+        "serializer_class": serializer,
+        "queryset": cls_model.objects.all().order_by(order_field),
+        "permission_classes": [Permission],
+        "get_queryset": lambda self, *args, **kwargs: cls_model.objects.filter(**query_from_request(self.request, serializer)).order_by(order_field)}
+    )
 
     return CustomViewSet
 

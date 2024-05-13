@@ -211,6 +211,10 @@ class Lesson(UUIDMixin, CreatedMixin, ModifiedMixin):
 
 @receiver(pre_save, sender=Lesson)
 def update_end_time(sender, instance, **kwargs):
+    # Убедитесь, что start_time является datetime.datetime
+    if isinstance(instance.start_time, str):
+        instance.start_time = datetime.datetime.strptime(
+            instance.start_time, '%Y-%m-%d %H:%M:%S')
     instance.end_time = instance.start_time + \
         timedelta(minutes=instance.duration)
 
