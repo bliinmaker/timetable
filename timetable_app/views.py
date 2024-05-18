@@ -1,21 +1,10 @@
-from typing import Any
-
-from django.contrib.auth import decorators as auth_decorators
-from django.core.paginator import Paginator
 from django.db import models
 from django.shortcuts import render
 from django.utils import timezone
 from django.utils.translation import gettext as _
-from django.views.generic import ListView
-from rest_framework import authentication, permissions
-from rest_framework import status as status_codes
 from rest_framework import viewsets
-from rest_framework.parsers import JSONParser
 from rest_framework.permissions import BasePermission
-from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet
 
-from . import config
 from .models import Faculty, Group, Lesson, Student, Subject, Teacher
 from .serializers import (FacultySerializer, GroupSerializer, LessonSerializer,
                           StudentSerializer, SubjectSerializer,

@@ -1,21 +1,15 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Localization Project</title>
-</head>
-<body>
-    {% load i18n %}
-    <h1>{{ greeting }}</h1>
-    <p>{% translate 'Number' %}: {{ large_number }}</p>
-    <p>{% translate 'Date' %}: {{ current_date }}</p>
-    <form action="{% url 'set_language' %}" method="post">
-        {% csrf_token %}
-        <input name="next" type="hidden" value="{{ redirect_to }}" />
-        <select name="language">
-            <option value="en">English</option>
-            <option value="ru">Russian</option>
-        </select>
-        <input type="submit" value="Change Language">
-    </form>
-</body>
+{% extends 'main.html' %} {% load static %} {% block content %}
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Beauty Salon</title>
+    <!-- Boxicons CSS -->
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" />
+    <!-- Link To Css -->
+    <link rel="stylesheet" type="text/css" href="{% static '/main.css' %}" />
+  </head>
+  <body></body>
 </html>
+{% endblock %}
