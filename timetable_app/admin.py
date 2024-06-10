@@ -1,7 +1,9 @@
 from django.contrib import admin
+from django import forms
+from django.contrib.auth.admin import UserAdmin
 
 from .models import (Faculty, Group, Lesson, Student, Subject, SubjectGroup,
-                     SubjectTeacher, Teacher)
+                     SubjectTeacher, Teacher, AppUser)
 
 
 class SubjectGroupInline(admin.TabularInline):
@@ -66,3 +68,41 @@ class StudentAdmin(admin.ModelAdmin):
     list_filter = (
         'group',
     )
+
+
+class UserCreationForm(forms.ModelForm):
+    class Meta:
+        model = AppUser
+        fields = ('email',)
+
+    def save(self, commit=True):
+        user = super(UserCreationForm, self).save(commit=False)
+        user.set_password(self.cleaned_data["password"])
+        if commit:
+            user.save()
+        return user
+
+
+class CustomUserAdmin(UserAdmin):
+    add_form = UserCreationForm
+    list_display = ("email",)
+    ordering = ("email",)
+    readonly_fields = ('date_joined',)
+
+    fieldsets = (
+        (None, {
+            'fields': ('email', 'username', 'password', 'is_superuser', 'is_staff', 'is_active')
+        }),
+    )
+
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('email', 'username', 'password', 'is_superuser', 'is_staff', 'is_active')
+        }),
+    )
+
+    filter_horizontal = ()
+
+
+admin.site.register(AppUser, CustomUserAdmin)
