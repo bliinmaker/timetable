@@ -1,13 +1,15 @@
 from datetime import datetime, timedelta
 from uuid import uuid4
 
-from django.conf.global_settings import AUTH_USER_MODEL
+from timetable.settings import AUTH_USER_MODEL
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.db import models
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.base_user import BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 
 from . import config
 
@@ -69,6 +71,54 @@ class ModifiedMixin(models.Model):
         abstract = True
 
 
+class AppUserManager(BaseUserManager):
+    def create_user(self, email, password=None):
+        if not email:
+            raise ValueError('An email is required.')
+        if not password:
+            raise ValueError('A password is required.')
+        email = self.normalize_email(email)
+        user = self.model(email=email)
+        user.set_password(password)
+        user.save()
+        return user
+
+    def create_superuser(self, email, username, password=None):
+        if not email:
+            raise ValueError('An email is required.')
+        if not password:
+            raise ValueError('A password is required.')
+        user = self.create_user(email, password)
+        user.username = username
+        user.is_superuser = True
+        user.is_staff = True
+        user.save(using=self._db)
+        return user
+
+
+class AppUser(AbstractBaseUser, PermissionsMixin, UUIDMixin):
+    email = models.EmailField(max_length=50, unique=True)
+    username = models.CharField(max_length=50)
+    is_staff = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
+    date_joined = models.DateTimeField(auto_now_add=True)
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['username']
+
+    objects = AppUserManager()
+
+    def __str__(self):
+        return self.username
+
+    class Meta:
+        ordering = ['username']
+        verbose_name = _('app_user')
+        verbose_name_plural = _('app_users')
+        db_table = 'app_user'
+
+
 class Faculty(UUIDMixin, CreatedMixin, ModifiedMixin):
     title = models.CharField(_('faculty'), max_length=config.CHARS_DEFAULT)
     code_faculty = models.CharField(
@@ -121,7 +171,7 @@ class Subject(UUIDMixin, CreatedMixin, ModifiedMixin):
 
 class Teacher(UUIDMixin, CreatedMixin, ModifiedMixin):
     user = models.OneToOneField(
-        AUTH_USER_MODEL, null=True, on_delete=models.CASCADE)
+        AppUser, null=True, on_delete=models.CASCADE)
     full_name = models.CharField(
         _('full name'), max_length=config.CHARS_DEFAULT)
     subjects = models.ManyToManyField(
@@ -183,14 +233,12 @@ class Lesson(UUIDMixin, CreatedMixin, ModifiedMixin):
         teachers = Teacher.objects.filter(subject__id=self.subject_id)
         if self.teacher not in teachers:
             raise ValidationError(
-                f"The teacher {self.teacher} is not assigned to teach the \
-                subject {self.subject}."
+                f"The teacher {self.teacher} is not assigned to teach the subject {self.subject}."
             )
         groups = Group.objects.filter(subject__id=self.subject_id)
         if self.group not in groups:
             raise ValidationError(
-                f"The lesson {self.subject} does not belong to the group {
-                    self.group}."
+                f"The lesson {self.subject} does not belong to the group {self.group}."
             )
         if not self.validate_lesson():
             raise ValidationError(
@@ -211,7 +259,6 @@ class Lesson(UUIDMixin, CreatedMixin, ModifiedMixin):
 
 @receiver(pre_save, sender=Lesson)
 def update_end_time(sender, instance, **kwargs):
-    # Убедитесь, что start_time является datetime.datetime
     if isinstance(instance.start_time, str):
         instance.start_time = datetime.datetime.strptime(
             instance.start_time, '%Y-%m-%d %H:%M:%S')
@@ -221,7 +268,7 @@ def update_end_time(sender, instance, **kwargs):
 
 class Student(UUIDMixin, ModifiedMixin, CreatedMixin):
     user = models.OneToOneField(
-        AUTH_USER_MODEL,  null=True, on_delete=models.CASCADE)
+        AppUser,  null=True, on_delete=models.CASCADE)
     full_name = models.CharField(verbose_name=_(
         'full name'), max_length=config.CHARS_DEFAULT)
     group = models.ForeignKey(Group, verbose_name=_(
