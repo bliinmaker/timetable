@@ -30,6 +30,12 @@ msgstr ""
 msgid "faculty"
 msgstr ""
 
+msgid "app_user"
+msgstr ""
+
+msgid "app_users"
+msgstr ""
+
 msgid "code faculty"
 msgstr ""
 

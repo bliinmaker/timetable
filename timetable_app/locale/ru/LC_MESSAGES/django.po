@@ -32,8 +32,11 @@ msgstr "изменено"
 msgid "faculty"
 msgstr "факультет"
 
-msgid "code faculty"
-msgstr "код факультета"
+msgid "app_user"
+msgstr "пользователь"
+
+msgid "app_users"
+msgstr "пользователи"
 
 msgid "description"
 msgstr "описание"
