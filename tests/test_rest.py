@@ -4,21 +4,18 @@ from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.test import APIClient
 
-from timetable_app.models import Faculty, Student, Subject, Teacher
-
+from timetable_app.models import AppUser, Faculty, Group, Subject, Teacher, Lesson, Student
 
 def create_viewset_test(model_class, url, creation_attrs):
     class ViewSetTest(TestCase):
         def setUp(self):
             self.client = APIClient()
-            self.user = User.objects.create_user(
-                username='user', password='user')
-            self.superuser = User.objects.create_user(
-                username='superuser', password='superuser', is_superuser=True)
+            self.user = AppUser.objects.create_user(email='user@example.com', password='user')
+            self.superuser = AppUser.objects.create_superuser(email='superuser@example.com', username='superuser', password='superuser')
             self.user_token = Token.objects.create(user=self.user)
             self.superuser_token = Token.objects.create(user=self.superuser)
 
-        def get(self, user: User, token: Token):
+        def get(self, user: AppUser, token: Token):
             self.client.force_authenticate(user=user, token=token)
             response = self.client.get(url)
             self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -29,7 +26,7 @@ def create_viewset_test(model_class, url, creation_attrs):
         def test_get_by_superuser(self):
             self.get(self.superuser, self.superuser_token)
 
-        def manage(self, user: User, token: Token, post_status: int, put_status: int, delete_status: int):
+        def manage(self, user: AppUser, token: Token, post_status: int, put_status: int, delete_status: int):
             self.client.force_authenticate(user=user, token=token)
 
             # POST
@@ -65,16 +62,15 @@ def create_viewset_test(model_class, url, creation_attrs):
 
     return ViewSetTest
 
-
 SubjectViewSetTest = create_viewset_test(
-    Subject, '/rest/subjects/', {'title': 'Химия'})
+    Subject, '/api/subjects/', {'title': 'Химия'})
 StudentViewSetTest = create_viewset_test(
-    Student, '/rest/students/', {'full_name': 'Бартович Михаил'})
+    Student, '/api/students/', {'full_name': 'Бартович Михаил'})
 TeacherViewSetTest = create_viewset_test(
-    Teacher, '/rest/teachers/', {'full_name': 'Верховой Игорь'})
+    Teacher, '/api/teachers/', {'full_name': 'Верховой Игорь'})
 FacultyViewSetTest = create_viewset_test(
-    Faculty, '/rest/faculties/', {
+    Faculty, '/api/faculties/', {
         'title': 'Гуманитарные науки',
         'code_faculty': 'HN-23',
-        'description': ''
+        'description': '',
     })
