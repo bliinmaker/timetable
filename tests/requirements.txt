@@ -12,4 +12,3 @@ flake8-bandit==4.1.1
 python-dotenv==0.21.0
 django-storages==1.14.3
 boto3==1.34.101
-django-minio-backend==3.6.0
