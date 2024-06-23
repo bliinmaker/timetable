@@ -41,7 +41,7 @@ jobs:
         python3 -m pip install --upgrade pip
         pip install -r tests/requirements.txt
         chmod +x tests/test.sh
-        echo "SECRET_KEY="django-insecure-=jj2j3&j!13etr9)&y018#*^-uv1$a70(2%52*rgco!btl7#@s"" >>.env
+        echo "SECRET_KEY=django-insecure-=jj2j3&j!13etr9)&y018#*^-uv1$a70(2%52*rgco!btl7#@s" >>.env
     - name: Test views
       run: ./tests/test.sh tests.test_views
     - name: Test models
