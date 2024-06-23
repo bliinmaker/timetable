@@ -22,6 +22,7 @@ urlpatterns = [
     path('api/logout/', views.UserLogout.as_view(), name='logout'),
     path('api/user/', views.UserView.as_view(), name='user'),
     path('api/session/', views.session_view, name='api-session'),
-    path('api/user/<str:id>/student/', views.UserStudentDetailView.as_view(), name='user-student-detail'),
-    path('api/user/<str:id>/teacher/', views.UserTeacherDetailView.as_view(), name='user-teacher-detail'),
+    path('api/user/<str:user_id>/student/', views.UserStudentDetailView.as_view(), name='user-student-detail'),
+    path('api/user/<str:user_id>/teacher/', views.UserTeacherDetailView.as_view(), name='user-teacher-detail'),
+    path('csrf-token', views.CsrfTokenView.as_view(), name='csrf-token'),
 ]
