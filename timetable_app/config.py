@@ -1,3 +1,5 @@
+"""Variables for the project."""
+
 CHARS_DEFAULT = 50
 EMAIL_DEFAULT_LEN = 256
 DECIMAL_PLACES = 2
