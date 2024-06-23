@@ -38,6 +38,12 @@ msgstr "пользователь"
 msgid "app_users"
 msgstr "пользователи"
 
+msgid "date"
+msgstr "дата"
+
+msgid "lesson_slot"
+msgstr "номер пары"
+
 msgid "description"
 msgstr "описание"
 

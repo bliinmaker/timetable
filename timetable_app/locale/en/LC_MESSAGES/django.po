@@ -36,6 +36,12 @@ msgstr ""
 msgid "app_users"
 msgstr ""
 
+msgid "date"
+msgstr ""
+
+msgid "lesson_slot"
+msgstr ""
+
 msgid "code faculty"
 msgstr ""
 

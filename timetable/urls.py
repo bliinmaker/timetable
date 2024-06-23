@@ -1,3 +1,5 @@
+"""URL declarations for the timetable app."""
+
 from django.contrib import admin
 from django.urls import include, path
 
